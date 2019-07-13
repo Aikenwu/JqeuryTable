@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Compare Table</title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div class="container body-content">
+        <hr />
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label class="col-sm-2 control-label">HighLight</label>
+                <div class="col-sm-10">
+                    <select class="form-control high-light-select">
+                        <option value="None">None</option>
+                        <option value="Similars">Similars</option>
+                        <option value="Differents">Differents</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <table class="table table-hover compare_table">
+                    <tbody>
+                        <tr>
+                            <th>Property</th>
+                            <td>一</td>
+                            <td>二</td>
+                            <td>三</td>
+                            <td>四</td>
+                            <td>五</td>
+                            <td>六</td>
+                            <td>七</td>
+                            <td>八</td>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>A</td>
+                            <td>B</td>
+                            <td>C</td>
+                            <td>D</td>
+                            <td>E</td>
+                            <td>F</td>
+                            <td>H</td>
+                            <td>G</td>
+                        </tr>
+                        <tr>
+                            <th>Age</th>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>555</td>
+                            <td>555</td>
+                        </tr>
+                        <tr>
+                            <th>Other</th>
+                            <td>CDE</td>
+                            <td>CDE</td>
+                            <td>CDE</td>
+                            <td>CDE</td>
+                            <td>CDE</td>
+                            <td>ABC</td>
+                            <td>ABC</td>
+                            <td>ABC</td>
+                        </tr>
+                        <tr>
+                            <th>Operate</th>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                            <td><button type="button" class="btn btn-warning btn-remove">Remove</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; 2019 - Aiken</p>
+        </footer>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            //hide >5 
+            $(".compare_table tbody tr").each(function () {
+                $(this).find("td:gt(4)").hide();
+            });
+
+            //higtlight select
+            $(".high-light-select").change(function () {
+                var selValue = $(this).val();
+
+                $(".compare_table tbody tr:gt(0)").each(function (index, element) {
+
+                    var tmp = $(element).removeClass("success").removeClass("danger").children("td:not(:hidden):first").html(), same = true;
+
+                    if (selValue === "None") return;
+
+                    var tdCanCompare = $(element).children("td:not(:hidden):gt(0):lt(4)");
+
+                    if (tdCanCompare.length < 1) return;
+
+                    tdCanCompare.each(function (i, e) {
+
+                        if (tmp != $(e).html()) {
+                            same = false;
+                            return false;
+                        }
+                    });
+                    if (same && selValue === "Similars") {
+                        $(element).addClass("success");
+                    } else if (!same && selValue == "Differents") {
+                        $(element).addClass("danger");
+                    }
+                });
+            });
+
+            //remove signel
+            $(".btn-remove").click(function () {
+                var tdIndex = $(this).parent("td").parent("tr").children("td").index($(this).parent("td"));
+                
+                //remove
+                $(".compare_table tbody tr").each(function () {
+                    $(this).find("td").eq(tdIndex).remove();
+                });
+                //show first hidden
+                $(".compare_table tbody tr").each(function () {
+                    $(this).find("td:hidden:eq(0)").show();
+                });
+
+                $(".high-light-select").change();
+
+                if ($(".compare_table tbody tr:first td:not(:hidden)").length == 0) {
+                    alert("Last compare item!!!");
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
